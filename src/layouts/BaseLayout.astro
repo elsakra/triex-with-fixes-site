@@ -1,0 +1,258 @@
+---
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import siteData from '@/data/site.json';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+const pageTitle = title ? `${title} | ${siteData.company.name}` : siteData.seo.title;
+const pageDescription = description || siteData.seo.description;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={pageDescription} />
+    <title>{pageTitle}</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet" />
+    
+    <!-- Favicon - use logo if it's a CDN URL, otherwise fallback to static -->
+    {siteData.branding?.logo?.includes('cloudinary') || siteData.branding?.logo?.includes('http') ? (
+      <link rel="icon" type="image/png" href={siteData.branding.logo} />
+    ) : (
+      <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    )}
+  </head>
+  <body class="bg-sand-50 text-slate-900 font-body antialiased">
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<style is:global>
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  /* Disable ligatures to prevent font rendering issues */
+  * {
+    font-feature-settings: "liga" 0, "clig" 0, "dlig" 0, "hlig" 0;
+    -webkit-font-feature-settings: "liga" 0, "clig" 0, "dlig" 0, "hlig" 0;
+    -moz-font-feature-settings: "liga" 0, "clig" 0, "dlig" 0, "hlig" 0;
+    font-variant-ligatures: none;
+    -webkit-font-variant-ligatures: none;
+  }
+  
+  .font-display {
+    font-family: 'Libre Baskerville', Georgia, serif;
+  }
+  
+  .font-body {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  /* Hero headline - massive display type */
+  .hero-headline {
+    font-size: clamp(2.5rem, 8vw, 7rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+  }
+  
+  /* Hero tagline - elegant italic */
+  .hero-tagline {
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+  }
+
+  /* Typography hierarchy */
+  h1, .h1 {
+    font-size: clamp(2.25rem, 5vw, 3.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+  
+  h2, .h2 {
+    font-size: clamp(1.875rem, 4vw, 3rem);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+  
+  h3, .h3 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    font-weight: 600;
+  }
+  
+  /* Section label styling */
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #64748B;
+  }
+
+  /* Kinetic headline helpers - refined, subtle effect */
+  .kinetic-headline .headline-stack {
+    position: relative;
+    display: inline-block;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+  }
+
+  .kinetic-headline .headline-fill,
+  .kinetic-headline .headline-outline,
+  .kinetic-headline .headline-offset {
+    display: block;
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-weight: 700;
+  }
+
+  .kinetic-headline .headline-fill {
+    color: #1E293B;
+  }
+
+  /* Subtle outline echo - refined */
+  .kinetic-headline .headline-outline {
+    position: absolute;
+    inset: 0;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(30, 41, 59, 0.2);
+    text-stroke: 1px rgba(30, 41, 59, 0.2);
+    transform: translate(0.06em, 0.04em);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  /* Very subtle offset shadow - barely visible */
+  .kinetic-headline .headline-offset {
+    position: absolute;
+    inset: 0;
+    color: rgba(30, 41, 59, 0.03);
+    transform: translate(0.12em, 0.08em);
+    pointer-events: none;
+  }
+
+  .kinetic-headline .headline-marquee {
+    margin-top: 1rem;
+    overflow: hidden;
+    border-top: 1px solid rgba(226, 232, 240, 0.8);
+    padding-top: 0.875rem;
+  }
+
+  .kinetic-headline .marquee-track {
+    display: flex;
+    gap: 3rem;
+    width: max-content;
+    animation: marqueeX 28s linear infinite;
+    will-change: transform;
+  }
+
+  .kinetic-headline .marquee-item {
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.8125rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(100, 116, 139, 0.65);
+    white-space: nowrap;
+  }
+
+  @keyframes marqueeX {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-33.333%); }
+  }
+
+  /* Scroll reveal helpers */
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 700ms cubic-bezier(.2,.7,.2,1), transform 700ms cubic-bezier(.2,.7,.2,1);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform;
+  }
+
+  .is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Motion safety */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .kinetic-headline .marquee-track { animation: none; }
+    [data-reveal] { opacity: 1; transform: none; transition: none; }
+    .animate-bounce { animation: none !important; }
+  }
+
+  /* Mobile optimization: cleaner typography on small screens */
+  @media (max-width: 640px) {
+    .kinetic-headline .headline-outline,
+    .kinetic-headline .headline-offset {
+      display: none;
+    }
+    .kinetic-headline .headline-stack {
+      letter-spacing: -0.02em;
+    }
+    
+    /* Tighter spacing on mobile */
+    .hero-headline {
+      font-size: clamp(2.25rem, 10vw, 3.5rem);
+    }
+  }
+  
+  /* Tablet: subtle effect */
+  @media (min-width: 641px) and (max-width: 1024px) {
+    .kinetic-headline .headline-outline {
+      opacity: 0.4;
+      transform: translate(0.04em, 0.03em);
+    }
+    .kinetic-headline .headline-offset {
+      opacity: 0.5;
+    }
+  }
+</style>
+
+<script is:inline>
+  // Scroll reveal: IntersectionObserver (no deps)
+  (() => {
+    if (typeof window === 'undefined') return;
+
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+    if (reduceMotion) return;
+
+    const nodes = Array.from(document.querySelectorAll('[data-reveal]'));
+    if (nodes.length === 0) return;
+
+    for (const node of nodes) {
+      const delay = node.getAttribute('data-reveal-delay');
+      if (delay) node.style.setProperty('--reveal-delay', `${delay}ms`);
+    }
+
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        e.target.classList.add('is-revealed');
+        io.unobserve(e.target);
+      }
+    }, { threshold: 0.12, rootMargin: '0px 0px -10% 0px' });
+
+    nodes.forEach((n) => io.observe(n));
+  })();
+</script>

@@ -1,0 +1,381 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Button from '@/components/Button.astro';
+import SectionHeader from '@/components/SectionHeader.astro';
+import KineticHeadline from '@/components/KineticHeadline.astro';
+import HeroScene from '@/components/HeroScene.astro';
+import siteData from '@/data/site.json';
+import { getCollection } from 'astro:content';
+
+const services = await getCollection('services');
+const testimonials = await getCollection('testimonials');
+const portfolio = await getCollection('portfolio');
+const team = await getCollection('team');
+
+const { hero, sections, company } = siteData;
+const sortedServices = services.sort((a, b) => (a.data.order || 0) - (b.data.order || 0)).slice(0, 3);
+const featuredTestimonials = testimonials.filter(t => t.data.featured).slice(0, 3);
+const featuredPortfolio = portfolio.filter(p => p.data.featured).sort((a, b) => (a.data.order || 0) - (b.data.order || 0)).slice(0, 3);
+const sortedTeam = team.sort((a, b) => (a.data.order || 0) - (b.data.order || 0)).slice(0, 3);
+---
+
+<BaseLayout>
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden min-h-screen flex flex-col">
+    <HeroScene />
+    
+    <!-- Hero content: positioned at bottom-left -->
+    <div class="relative flex-1 flex flex-col justify-end max-w-7xl mx-auto w-full px-6 sm:px-8 lg:px-12 pb-20 sm:pb-24 lg:pb-32">
+      <div class="max-w-4xl">
+        {/* Italic tagline above headline */}
+        {hero.tagline && (
+          <p class="hero-tagline font-display italic text-slate-700 text-lg sm:text-xl lg:text-2xl mb-4 sm:mb-5">
+            {hero.tagline}
+          </p>
+        )}
+        
+        {/* Main headline - much larger */}
+        <h1 class="hero-headline font-display font-bold text-slate-900 leading-[0.95] tracking-[-0.03em]">
+          {hero.headline}
+        </h1>
+        
+        {hero.subheadline && (
+          <p class="mt-6 sm:mt-8 text-lg sm:text-xl lg:text-2xl text-slate-600 leading-relaxed max-w-2xl">
+            {hero.subheadline}
+          </p>
+        )}
+      </div>
+
+      <!-- Scroll indicator: centered at bottom -->
+      <div class="absolute bottom-6 left-1/2 -translate-x-1/2" aria-hidden="true">
+        <div class="flex flex-col items-center gap-0.5 text-slate-400">
+          <svg class="w-5 h-5 animate-bounce" style="animation-duration: 1.8s;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7" />
+          </svg>
+          <svg class="w-5 h-5 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About/Mission Section -->
+  <section class="py-24 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div data-reveal>
+          <span class="text-sm font-semibold text-primary-600 uppercase tracking-wider">About</span>
+          <h2 class="mt-3 font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 leading-tight">
+            {sections.about?.headline}
+          </h2>
+          <p class="mt-6 text-lg text-slate-600 leading-relaxed">
+            {sections.about?.content}
+          </p>
+          
+          {sections.about?.values && (
+            <div class="mt-10 space-y-6">
+              {sections.about.values.map((value, i) => (
+                <div class="flex gap-4 items-start">
+                  <span class="flex-shrink-0 w-7 h-7 rounded-full bg-slate-900 text-white text-sm font-medium flex items-center justify-center">
+                    {i + 1}
+                  </span>
+                  <div>
+                    <h3 class="font-semibold text-slate-900">{value.title}</h3>
+                    <p class="mt-1 text-slate-600 text-sm">{value.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div class="mt-10" data-reveal data-reveal-delay="120">
+            <Button href="/about" style="outline">
+              Learn more about us
+            </Button>
+          </div>
+        </div>
+
+        <div class="relative" data-reveal data-reveal-delay="160">
+          <div class="aspect-[4/5] rounded-2xl overflow-hidden bg-gradient-to-br from-primary-50 to-accent-50 flex items-center justify-center">
+            {sections.about?.image ? (
+              <img 
+                src={sections.about.image} 
+                alt={sections.about.headline || 'About us'}
+                class="w-full h-full object-cover"
+              />
+            ) : (
+              <svg class="w-48 h-48 text-primary-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+            )}
+          </div>
+          <div class="absolute -bottom-4 -right-4 w-32 h-32 bg-accent-100 rounded-xl -z-10"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Capabilities/Services Section -->
+  {sortedServices.length > 0 && (
+    <section class="py-24 bg-sand-50">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
+          <div data-reveal>
+            <p class="text-xs uppercase tracking-[0.22em] text-slate-500">Capabilities</p>
+            <KineticHeadline
+              as="h2"
+              text={sections.services?.headline || "Capabilities"}
+              echoText={(sections.services?.headline || "Capabilities")}
+              class="mt-3 text-3xl sm:text-4xl lg:text-5xl"
+            />
+            {sections.services?.description && (
+              <p class="mt-5 text-lg text-slate-600 max-w-2xl" data-reveal data-reveal-delay="90">
+                {sections.services.description}
+              </p>
+            )}
+          </div>
+
+          <div class="flex-shrink-0" data-reveal data-reveal-delay="140">
+            <Button href="/services" style="outline">
+              View all capabilities
+            </Button>
+          </div>
+        </div>
+
+        <div class="mt-14 border-t border-slate-200/80">
+          {sortedServices.map((service, idx) => (
+            <a
+              href={`/services/${service.slug}`}
+              class="group block py-10 border-b border-slate-200/60"
+              data-reveal
+              data-reveal-delay={(idx * 70).toString()}
+            >
+              <div class="grid lg:grid-cols-12 gap-6 items-start">
+                <div class="lg:col-span-4">
+                  <h3 class="font-display text-2xl sm:text-3xl font-bold text-slate-900 group-hover:text-primary-700 transition-colors">
+                    {service.data.title}
+                  </h3>
+                </div>
+                <div class="lg:col-span-7">
+                  {service.data.shortDescription && (
+                    <p class="text-slate-600 text-lg leading-relaxed">
+                      {service.data.shortDescription}
+                    </p>
+                  )}
+                  {service.data.features && service.data.features.length > 0 && (
+                    <div class="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-500">
+                      {service.data.features.slice(0, 4).map((feature) => (
+                        <span class="inline-flex items-center gap-2">
+                          <span class="w-1.5 h-1.5 rounded-full bg-primary-400"></span>
+                          {feature}
+                        </span>
+          ))}
+        </div>
+                  )}
+                </div>
+                <div class="lg:col-span-1 flex lg:justify-end">
+                  <span class="text-slate-400 group-hover:text-primary-600 transition-colors">→</span>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Selected Work/Portfolio Section -->
+  {featuredPortfolio.length > 0 && (
+    <section class="py-24 bg-white">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div data-reveal>
+          <p class="text-xs uppercase tracking-[0.22em] text-slate-500">Work</p>
+          <KineticHeadline
+            as="h2"
+            text={sections.portfolio?.headline || "Selected work"}
+            echoText={(sections.portfolio?.headline || "Selected work")}
+            class="mt-3 text-3xl sm:text-4xl lg:text-5xl"
+          />
+          {sections.portfolio?.description && (
+            <p class="mt-5 text-lg text-slate-600 max-w-2xl" data-reveal data-reveal-delay="90">
+              {sections.portfolio.description}
+            </p>
+          )}
+        </div>
+        
+        <div class="mt-14 grid md:grid-cols-3 gap-8">
+          {featuredPortfolio.map((project) => (
+            <a 
+              href={`/portfolio/${project.slug}`}
+              class="group block"
+              data-reveal
+            >
+              <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-slate-100 to-slate-50 mb-5">
+                {project.data.coverImage ? (
+                  <img 
+                    src={project.data.coverImage} 
+                    alt={project.data.title}
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                ) : (
+                  <div class="w-full h-full flex items-center justify-center">
+                    <svg class="w-16 h-16 text-slate-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                )}
+              </div>
+              <div class="flex items-center gap-3 mb-2">
+                {project.data.industry && (
+                  <span class="text-xs font-medium text-primary-600 uppercase tracking-wider">{project.data.industry}</span>
+                )}
+              </div>
+              <h3 class="font-display text-xl font-bold text-slate-900 group-hover:text-primary-700 transition-colors">
+                {project.data.title}
+              </h3>
+              <p class="mt-2 text-slate-600 line-clamp-2">
+                {project.data.excerpt}
+              </p>
+            </a>
+          ))}
+        </div>
+        
+        <div class="mt-12 text-center" data-reveal data-reveal-delay="120">
+          <Button href="/portfolio" style="outline">
+            View all work
+          </Button>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Team Section -->
+  {sortedTeam.length > 0 && (
+    <section class="py-24 bg-sand-50">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div data-reveal>
+          <p class="text-xs uppercase tracking-[0.22em] text-slate-500">Team</p>
+          <KineticHeadline
+            as="h2"
+            text={sections.team?.headline || "Leadership"}
+            echoText={(sections.team?.headline || "Leadership")}
+            class="mt-3 text-3xl sm:text-4xl lg:text-5xl"
+          />
+          {sections.team?.description && (
+            <p class="mt-5 text-lg text-slate-600 max-w-2xl" data-reveal data-reveal-delay="90">
+              {sections.team.description}
+            </p>
+          )}
+        </div>
+        
+        <div class="mt-14 grid md:grid-cols-3 gap-8">
+          {sortedTeam.map((member) => (
+            <div class="text-center" data-reveal>
+              <div class="mx-auto w-40 h-40 rounded-full overflow-hidden bg-gradient-to-br from-primary-100 to-accent-100 mb-5">
+                {member.data.image ? (
+                  <img 
+                    src={member.data.image} 
+                    alt={member.data.name}
+                    class="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div class="w-full h-full flex items-center justify-center">
+                    <svg class="w-20 h-20 text-primary-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+              </div>
+                )}
+              </div>
+              <h3 class="font-display text-xl font-bold text-slate-900">{member.data.name}</h3>
+              <p class="mt-1 text-primary-600 font-medium">{member.data.role}</p>
+              {member.data.location && (
+                <p class="mt-2 text-sm text-slate-500">{member.data.location}</p>
+              )}
+            </div>
+          ))}
+        </div>
+        
+        <div class="mt-12 text-center" data-reveal data-reveal-delay="120">
+          <Button href="/team" style="outline">
+            Meet the team
+          </Button>
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Testimonials Section -->
+  {featuredTestimonials.length > 0 && (
+    <section class="py-24 bg-white">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div data-reveal>
+          <p class="text-xs uppercase tracking-[0.22em] text-slate-500">Notes</p>
+          <KineticHeadline
+            as="h2"
+            text={sections.testimonials?.headline || "What clients say"}
+            echoText={(sections.testimonials?.headline || "What clients say")}
+            class="mt-3 text-3xl sm:text-4xl lg:text-5xl"
+          />
+          {sections.testimonials?.description && (
+            <p class="mt-5 text-lg text-slate-600 max-w-2xl" data-reveal data-reveal-delay="90">
+              {sections.testimonials.description}
+            </p>
+          )}
+        </div>
+        
+        <div class="mt-14 grid md:grid-cols-3 gap-8">
+          {featuredTestimonials.map((testimonial) => (
+            <div class="bg-sand-50 rounded-2xl p-8" data-reveal>
+              <svg class="w-10 h-10 text-primary-200 mb-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+              </svg>
+              <p class="text-slate-700 leading-relaxed">
+                "{testimonial.data.quote}"
+              </p>
+              <div class="mt-6 flex items-center gap-4">
+                {testimonial.data.image && (
+                  <img 
+                    src={testimonial.data.image} 
+                    alt={testimonial.data.author}
+                    class="w-12 h-12 rounded-full object-cover"
+                  />
+                )}
+                <div>
+                  <p class="font-semibold text-slate-900">{testimonial.data.author}</p>
+                  {testimonial.data.company && (
+                    <p class="text-sm text-slate-500">{testimonial.data.company}</p>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- CTA Section -->
+  <section class="py-24 bg-primary-800">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-white">
+        {sections.cta?.headline || "Ready to build momentum?"}
+      </h2>
+      {sections.cta?.description && (
+        <p class="mt-6 text-xl text-primary-100">
+          {sections.cta.description}
+        </p>
+      )}
+      <div class="mt-10 flex flex-wrap justify-center gap-4">
+        <Button href={sections.cta?.cta?.href || "/contact"} style="white" size="lg">
+          {sections.cta?.cta?.label || "Get in touch"}
+            </Button>
+        {sections.cta?.secondaryCta && (
+          <Button href={sections.cta.secondaryCta.href} style="ghost" size="lg" class="text-white hover:bg-white/10">
+            {sections.cta.secondaryCta.label}
+            </Button>
+        )}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

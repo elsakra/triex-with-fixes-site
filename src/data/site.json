@@ -1,0 +1,83 @@
+{
+  "company": {
+    "name": "Triex Technologies, Inc.",
+    "tagline": "Turn your concepts into products.",
+    "description": "Triex Technologies, Inc. was founded in 2007 to provide you with top-quality automated test and consulting solutions. Since then, we have become an established leader in test tools manufacturing and development. Industry leaders trust us to provide design, build, and manufacturing solutions.",
+    "phone": null,
+    "email": "support@triextech.com",
+    "address": "7345 164th Ave NE Ste 145-226, Redmond, WA 98052",
+    "hours": null
+  },
+  "branding": {
+    "logo": "https://res.cloudinary.com/dil14r8je/image/upload/v1768866176/auto-site-builder/Triex%20With%20Fixes/image_0.png",
+    "primaryColor": "#1e40af",
+    "secondaryColor": null
+  },
+  "hero": {
+    "headline": "Embedded Engineering Consulting",
+    "subheadline": "Add engineers to your team and get your project done.",
+    "cta": {
+      "label": "View Consulting Solutions",
+      "href": "/contact"
+    },
+    "secondaryCta": null,
+    "backgroundImage": "https://plus.unsplash.com/premium_photo-1661663373098-003886896551?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wxMjA3fDB8MXxzZWFyY2h8MXx8cHJvZmVzc2lvbmFsJTIwd29ya3NwYWNlJTIwY2xlYW58ZW58MHwwfHx8MTc2ODg2NTI3MXww&ixlib=rb-4.1.0&q=80&w=1080"
+  },
+  "sections": {
+    "about": {
+      "headline": "About Triex Technologies",
+      "content": "Triex Technologies, Inc. was founded in 2007 to provide you with top-quality automated test and consulting solutions. Since then, we have become an established leader in test tools manufacturing and development. Industry leaders trust us to provide design, build, and manufacturing solutions. We are committed to making you happy about giving us your business.",
+      "image": "https://res.cloudinary.com/dil14r8je/image/upload/v1768866176/auto-site-builder/Triex%20With%20Fixes/image_1.jpg"
+    },
+    "services": {
+      "headline": "Our Services"
+    },
+    "team": {
+      "headline": "Our Team"
+    },
+    "testimonials": {
+      "headline": "What Our Clients Say"
+    },
+    "contact": {
+      "headline": "Contact Us"
+    }
+  },
+  "navigation": {
+    "items": [
+      {
+        "label": "Embedded Consulting",
+        "href": "/contact"
+      },
+      {
+        "label": "Products",
+        "href": "/contact"
+      },
+      {
+        "label": "Portfolio",
+        "href": "/contact"
+      },
+      {
+        "label": "About",
+        "href": "/contact"
+      },
+      {
+        "label": "Contact",
+        "href": "/contact"
+      }
+    ],
+    "ctaButton": {
+      "label": "Request a Quote",
+      "href": "/contact"
+    }
+  },
+  "footer": {
+    "copyright": "© 2014 Triex Technologies, Inc. All rights reserved.",
+    "socialLinks": {
+      "facebook": null
+    }
+  },
+  "seo": {
+    "title": "Triex Technologies, Inc. - Product Test and Design Solutions",
+    "description": "An established leader in test tools manufacturing and development, Triex Technologies provides you with top quality electrical and mechanical engineering solutions."
+  }
+}

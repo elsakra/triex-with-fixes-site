@@ -1,0 +1,168 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Button from '@/components/Button.astro';
+import SectionHeader from '@/components/SectionHeader.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const services = await getCollection('services');
+  return services.map((service) => ({
+    params: { slug: service.slug },
+    props: { service },
+  }));
+}
+
+const { service } = Astro.props;
+const { Content } = await service.render();
+
+// Get other services for related section
+const allServices = await getCollection('services');
+const otherServices = allServices
+  .filter(s => s.slug !== service.slug)
+  .sort((a, b) => (a.data.order || 0) - (b.data.order || 0))
+  .slice(0, 3);
+---
+
+<BaseLayout title={service.data.title} description={service.data.shortDescription}>
+  <!-- Hero -->
+  <section class="pt-28 pb-16 bg-gradient-to-b from-sand-50 to-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Breadcrumb -->
+      <div class="flex items-center gap-2 text-sm text-slate-500 mb-8">
+        <a href="/services" class="hover:text-primary-600 transition-colors">Capabilities</a>
+        <span class="text-slate-300">/</span>
+        <span class="text-slate-700">{service.data.title}</span>
+      </div>
+      
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        <div>
+          <span class="inline-flex items-center rounded-full bg-primary-50 border border-primary-100 px-3 py-1 text-xs font-semibold text-primary-700 uppercase tracking-wider mb-4">
+            Capability
+          </span>
+          <h1 class="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 leading-tight">
+            {service.data.title}
+          </h1>
+          {service.data.shortDescription && (
+            <p class="mt-6 text-xl text-slate-600 leading-relaxed">
+              {service.data.shortDescription}
+            </p>
+          )}
+          
+          <div class="mt-10 flex flex-wrap gap-4">
+            <Button href="/contact" style="primary" size="lg">
+              Start a conversation
+            </Button>
+            <Button href="/portfolio" style="outline" size="lg">
+              View our work
+            </Button>
+          </div>
+        </div>
+        
+        <div class="relative">
+          <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-gradient-to-br from-primary-50 to-accent-50">
+            {service.data.image ? (
+              <img 
+                src={service.data.image} 
+                alt={service.data.title}
+                class="w-full h-full object-cover"
+              />
+            ) : (
+              <div class="w-full h-full flex items-center justify-center">
+                <svg class="w-24 h-24 text-primary-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+            )}
+          </div>
+          <div class="absolute -bottom-4 -right-4 w-32 h-32 bg-accent-100 rounded-xl -z-10"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  {service.data.features && service.data.features.length > 0 && (
+    <section class="py-16 bg-white border-t border-slate-100">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="font-display text-2xl font-bold text-slate-900 mb-8">
+          What's included
+        </h2>
+        <ul class="space-y-4">
+          {service.data.features.map((feature) => (
+            <li class="flex items-start gap-3 text-slate-700 text-lg">
+              <span class="w-2 h-2 rounded-full bg-slate-400 flex-shrink-0 mt-2.5"></span>
+              <span>{feature}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <!-- Main Content -->
+  <section class="py-16 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="prose prose-slate prose-lg max-w-none prose-headings:font-display prose-headings:text-slate-900 prose-a:text-primary-600 prose-a:no-underline hover:prose-a:underline">
+        <Content />
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Services -->
+  {otherServices.length > 0 && (
+    <section class="py-20 bg-sand-50">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <SectionHeader 
+          headline="Other capabilities" 
+          description="Explore how else we can help."
+        />
+        
+        <div class="mt-12 grid md:grid-cols-3 gap-8">
+          {otherServices.map((related) => (
+            <a 
+              href={`/services/${related.slug}`} 
+              class="group block bg-white rounded-2xl p-8 shadow-sm border border-slate-100 hover:shadow-lg hover:border-slate-200 transition-all duration-300"
+            >
+              <div class="flex items-center justify-between mb-6">
+                <div class="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
+                  <svg class="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <span class="text-sm text-slate-400 group-hover:text-primary-600 transition-colors">→</span>
+              </div>
+              <h3 class="font-display text-lg font-bold text-slate-900 group-hover:text-primary-700 transition-colors">
+                {related.data.title}
+              </h3>
+              {related.data.shortDescription && (
+                <p class="mt-2 text-slate-600 text-sm line-clamp-2">
+                  {related.data.shortDescription}
+                </p>
+              )}
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- CTA -->
+  <section class="py-20 bg-primary-800">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="font-display text-3xl sm:text-4xl font-bold text-white">
+        Ready to get started?
+      </h2>
+      <p class="mt-4 text-lg text-primary-100">
+        Let's talk about what you're building.
+      </p>
+      <div class="mt-8 flex flex-wrap justify-center gap-4">
+        <Button href="/contact" style="white" size="lg">
+          Start a conversation
+        </Button>
+        <Button href="/services" style="ghost" size="lg" class="text-white hover:bg-white/10">
+          View all capabilities
+        </Button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

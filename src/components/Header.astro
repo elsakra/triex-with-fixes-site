@@ -1,0 +1,139 @@
+---
+import siteData from '@/data/site.json';
+const { navigation, company, branding } = siteData;
+const currentPath = Astro.url.pathname;
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 bg-transparent">
+  <nav class="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
+    <div class="h-16 sm:h-20 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-3">
+        <img src={branding.logo} alt={company.name} class="h-7 sm:h-8 w-auto" />
+        <span class="sr-only">{company.name}</span>
+      </a>
+
+      <button
+        type="button"
+        class="inline-flex items-center justify-center p-2 text-slate-700 hover:text-slate-900 transition-colors"
+        aria-label="Open menu"
+        aria-haspopup="dialog"
+        aria-controls="site-menu"
+        id="menu-open"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <dialog id="site-menu" class="p-0 bg-transparent w-full max-w-none">
+    <div class="fixed inset-0 bg-slate-900/30 backdrop-blur-sm"></div>
+    <div class="fixed inset-x-0 top-0 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 pt-6">
+      <div class="rounded-3xl bg-sand-50 border border-slate-200 shadow-2xl overflow-hidden" data-menu-panel>
+        <div class="flex items-center justify-between px-6 sm:px-8 py-5 border-b border-slate-200">
+          <a href="/" class="flex items-center gap-3">
+            <img src={branding.logo} alt={company.name} class="h-8 w-auto" />
+            <span class="sr-only">{company.name}</span>
+          </a>
+          <button
+            type="button"
+            id="menu-close"
+            class="inline-flex items-center justify-center p-2 text-slate-700 hover:text-slate-900"
+            aria-label="Close menu"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="px-6 sm:px-8 py-10">
+          <div class="grid lg:grid-cols-12 gap-10 items-start">
+            <div class="lg:col-span-8">
+              <nav aria-label="Primary">
+                <ul class="space-y-4">
+                  {navigation.items.map((item, idx) => (
+                    <li>
+                      <a
+                        href={item.href}
+                        class:list={[
+                          'block font-display text-3xl sm:text-4xl leading-tight tracking-tight transition-colors',
+                          currentPath === item.href ? 'text-slate-900' : 'text-slate-700 hover:text-slate-900',
+                        ]}
+                        data-reveal
+                        data-reveal-delay={(idx * 60).toString()}
+                      >
+                        {item.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </div>
+
+            <div class="lg:col-span-4 space-y-8">
+              <div class="rounded-2xl border border-slate-200 bg-white p-6" data-reveal data-reveal-delay="120">
+                <p class="text-xs uppercase tracking-[0.22em] text-slate-500">Contact</p>
+                <p class="mt-3 font-medium text-slate-900">{company.email}</p>
+                {navigation.ctaButton && (
+                  <a
+                    href={navigation.ctaButton.href}
+                    class="mt-5 inline-flex w-full items-center justify-center px-4 py-3 rounded-xl bg-slate-900 text-sand-50 font-semibold hover:bg-slate-800 transition-colors"
+                  >
+                    {navigation.ctaButton.label}
+                  </a>
+                )}
+              </div>
+
+              <div class="text-sm text-slate-600 space-y-2" data-reveal data-reveal-delay="180">
+                <a href="/privacy" class="block hover:text-slate-900 transition-colors">Privacy</a>
+                <a href="/terms" class="block hover:text-slate-900 transition-colors">Terms</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </dialog>
+</header>
+
+<script is:inline>
+  (() => {
+    const dialog = document.getElementById('site-menu');
+    const openBtn = document.getElementById('menu-open');
+    const closeBtn = document.getElementById('menu-close');
+
+    if (!dialog || !(dialog instanceof HTMLDialogElement)) return;
+
+    const lockScroll = (locked) => {
+      document.documentElement.style.overflow = locked ? 'hidden' : '';
+    };
+
+    const open = () => {
+      dialog.showModal();
+      lockScroll(true);
+    };
+    const close = () => {
+      dialog.close();
+      lockScroll(false);
+    };
+
+    openBtn?.addEventListener('click', open);
+    closeBtn?.addEventListener('click', close);
+
+    dialog.addEventListener('click', (e) => {
+      // Click outside the panel closes (native backdrop click isn't consistent across browsers)
+      const target = e.target;
+      if (!(target instanceof HTMLElement)) return;
+      const panel = target.closest('[data-menu-panel]');
+      if (!panel) close();
+    });
+
+    dialog.addEventListener('close', () => lockScroll(false));
+    dialog.addEventListener('cancel', (e) => {
+      e.preventDefault();
+      close();
+    });
+  })();
+</script>

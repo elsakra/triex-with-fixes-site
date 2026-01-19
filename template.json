@@ -1,0 +1,33 @@
+{
+  "id": "consulting-echo-street",
+  "name": "Echo Street Consulting",
+  "industry": "consulting",
+  "tags": ["consulting", "advisory", "investment", "editorial", "premium", "institutional"],
+  "description": "Premium editorial consulting template inspired by Echo Street Capital: oversized headline, airy layout, restrained palette, and structured storytelling across services, portfolio, and insights.",
+  "status": "approved",
+  "heroMedia": "image",
+  "pages": [
+    "home",
+    "about",
+    "services",
+    "portfolio",
+    "team",
+    "blog",
+    "contact",
+    "faq",
+    "privacy",
+    "terms"
+  ],
+  "contentCollections": [
+    "services",
+    "portfolio",
+    "team",
+    "blog",
+    "testimonials",
+    "faq"
+  ],
+  "previewUrl": null,
+  "sourceInspiration": "https://www.echostreetcapital.com/",
+  "createdAt": "2026-01-19",
+  "updatedAt": "2026-01-19"
+}

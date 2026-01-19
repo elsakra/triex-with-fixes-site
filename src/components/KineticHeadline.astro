@@ -1,0 +1,52 @@
+---
+interface Props {
+  text: string;
+  echoText?: string;
+  as?: 'h1' | 'h2' | 'h3';
+  class?: string;
+  marqueeText?: string;
+}
+
+const {
+  text,
+  echoText,
+  marqueeText,
+  as = 'h1',
+  class: className,
+} = Astro.props;
+---
+
+<div class:list={['kinetic-headline', className]}>
+  {as === 'h1' && (
+    <h1 class="headline-stack">
+      <span class="headline-fill">{text}</span>
+      <span class="headline-outline" aria-hidden="true">{echoText ?? text}</span>
+      <span class="headline-offset" aria-hidden="true">{echoText ?? text}</span>
+    </h1>
+  )}
+  {as === 'h2' && (
+    <h2 class="headline-stack">
+      <span class="headline-fill">{text}</span>
+      <span class="headline-outline" aria-hidden="true">{echoText ?? text}</span>
+      <span class="headline-offset" aria-hidden="true">{echoText ?? text}</span>
+    </h2>
+  )}
+  {as === 'h3' && (
+    <h3 class="headline-stack">
+      <span class="headline-fill">{text}</span>
+      <span class="headline-outline" aria-hidden="true">{echoText ?? text}</span>
+      <span class="headline-offset" aria-hidden="true">{echoText ?? text}</span>
+    </h3>
+  )}
+
+  {marqueeText && (
+    <div class="headline-marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span class="marquee-item">{marqueeText}</span>
+        <span class="marquee-item">{marqueeText}</span>
+        <span class="marquee-item">{marqueeText}</span>
+      </div>
+    </div>
+  )}
+</div>
+

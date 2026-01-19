@@ -1,0 +1,275 @@
+---
+/**
+ * Parameterized Hero Scene - generates unique, high-quality architectural visuals
+ * Reads branding colors from site.json for per-client customization
+ * Designed for content-swap: each client gets a unique but consistent scene
+ */
+import siteData from '@/data/site.json';
+
+const { branding, company } = siteData;
+
+// Generate deterministic seed from company name for consistent randomness
+const seed = company.name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+const seededRandom = (offset: number) => {
+  const x = Math.sin(seed + offset) * 10000;
+  return x - Math.floor(x);
+};
+
+// Extract brand colors with fallbacks
+const primaryColor = branding?.primaryColor || '#0F2742';
+const accentColor = branding?.accentColor || '#2B6CB0';
+
+// Generate scene variations based on seed
+const buildingOffset = Math.floor(seededRandom(1) * 60) - 30;
+const treeVariation = seededRandom(2);
+---
+
+<div class="hero-scene" aria-hidden="true">
+  <svg viewBox="0 0 1600 900" class="hero-scene__svg" preserveAspectRatio="xMidYMid slice">
+    <defs>
+      <!-- Sky gradient - warmer, more vibrant -->
+      <linearGradient id="sky-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#E8F4FC" />
+        <stop offset="40%" stop-color="#D4E8F5" />
+        <stop offset="100%" stop-color="#C5DCF0" />
+      </linearGradient>
+      
+      <!-- Glass reflections -->
+      <linearGradient id="glass-front" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.9" />
+        <stop offset="50%" stop-color="#E0F0FF" stop-opacity="0.7" />
+        <stop offset="100%" stop-color="#B8D8F0" stop-opacity="0.5" />
+      </linearGradient>
+      
+      <linearGradient id="glass-side" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#C8E0F0" stop-opacity="0.8" />
+        <stop offset="100%" stop-color="#A8C8E0" stop-opacity="0.6" />
+      </linearGradient>
+      
+      <!-- Water reflection gradient -->
+      <linearGradient id="water-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#B8D8F0" stop-opacity="0.6" />
+        <stop offset="50%" stop-color="#A0C8E8" stop-opacity="0.4" />
+        <stop offset="100%" stop-color="#90B8D8" stop-opacity="0.2" />
+      </linearGradient>
+      
+      <!-- Tree foliage gradients - vibrant greens -->
+      <radialGradient id="tree-light" cx="30%" cy="30%" r="70%">
+        <stop offset="0%" stop-color="#7CB860" />
+        <stop offset="60%" stop-color="#5A9E42" />
+        <stop offset="100%" stop-color="#4A8E35" />
+      </radialGradient>
+      
+      <radialGradient id="tree-mid" cx="30%" cy="30%" r="70%">
+        <stop offset="0%" stop-color="#6AAE50" />
+        <stop offset="60%" stop-color="#4A9035" />
+        <stop offset="100%" stop-color="#3A7828" />
+      </radialGradient>
+      
+      <radialGradient id="tree-dark" cx="30%" cy="30%" r="70%">
+        <stop offset="0%" stop-color="#5A9E42" />
+        <stop offset="60%" stop-color="#3A8028" />
+        <stop offset="100%" stop-color="#2A6820" />
+      </radialGradient>
+      
+      <!-- Shadows and depth -->
+      <linearGradient id="ground-shadow" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#0F2742" stop-opacity="0.08" />
+        <stop offset="100%" stop-color="#0F2742" stop-opacity="0" />
+      </linearGradient>
+      
+      <!-- Filters -->
+      <filter id="soft-blur" x="-30%" y="-30%" width="160%" height="160%">
+        <feGaussianBlur stdDeviation="20" />
+      </filter>
+      
+      <filter id="building-shadow" x="-30%" y="-30%" width="160%" height="160%">
+        <feDropShadow dx="0" dy="24" stdDeviation="32" flood-color="#0F2742" flood-opacity="0.15" />
+      </filter>
+      
+      <filter id="tree-glow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#2A6820" flood-opacity="0.2" />
+      </filter>
+    </defs>
+
+    <!-- Sky background -->
+    <rect x="0" y="0" width="1600" height="900" fill="url(#sky-grad)" />
+    
+    <!-- Atmospheric haze circles for depth -->
+    <circle cx="1300" cy="180" r="280" fill="#D8E8F4" opacity="0.6" filter="url(#soft-blur)" />
+    <circle cx="200" cy="300" r="200" fill="#E0F0F8" opacity="0.5" filter="url(#soft-blur)" />
+    <circle cx="800" cy="600" r="350" fill="#E8F4FC" opacity="0.4" filter="url(#soft-blur)" />
+    
+    <!-- Distant background buildings (silhouettes) -->
+    <g opacity="0.35">
+      <rect x="1100" y="180" width="180" height="320" rx="12" fill="#C8D8E8" />
+      <rect x="1300" y="240" width="140" height="260" rx="12" fill="#D0E0EC" />
+      <rect x="1000" y="280" width="120" height="220" rx="12" fill="#D8E8F0" />
+      <rect x="1450" y="300" width="100" height="200" rx="12" fill="#E0EEF4" />
+    </g>
+    
+    <!-- Water/pool plane -->
+    <g>
+      <ellipse cx="700" cy="720" rx="500" ry="80" fill="url(#water-grad)" />
+      <!-- Water reflection lines -->
+      <line x1="300" y1="710" x2="500" y2="710" stroke="#FFFFFF" stroke-width="2" opacity="0.3" />
+      <line x1="600" y1="725" x2="850" y2="725" stroke="#FFFFFF" stroke-width="1.5" opacity="0.25" />
+      <line x1="450" y1="740" x2="700" y2="740" stroke="#FFFFFF" stroke-width="1" opacity="0.2" />
+    </g>
+    
+    <!-- Main architectural structure with offset -->
+    <g filter="url(#building-shadow)" transform={`translate(${buildingOffset}, 0)`}>
+      <!-- Base platform -->
+      <path d="M300 580 L550 480 L1100 540 L850 680 Z" fill="#E8F0F4" />
+      <path d="M300 580 L850 680 L850 750 L300 640 Z" fill="#D0E0E8" />
+      <path d="M850 680 L1100 540 L1100 620 L850 750 Z" fill="#C0D0DC" />
+      
+      <!-- Middle tier -->
+      <path d="M400 480 L620 380 L1000 430 L780 550 Z" fill="#F0F6FA" />
+      <path d="M400 480 L780 550 L780 640 L400 560 Z" fill="#E0ECF2" />
+      <path d="M780 550 L1000 430 L1000 520 L780 640 Z" fill="#D0E0EA" />
+      
+      <!-- Upper structure -->
+      <path d="M480 400 L660 320 L920 360 L740 460 Z" fill="#F8FAFC" />
+      <path d="M480 400 L740 460 L740 540 L480 470 Z" fill="#EAF2F8" />
+      <path d="M740 460 L920 360 L920 440 L740 540 Z" fill="#DCE8F0" />
+      
+      <!-- Glass facade - main -->
+      <path d="M620 380 L820 300 L1000 360 L800 460 Z" fill="url(#glass-front)" />
+      
+      <!-- Glass window details -->
+      <g opacity="0.6">
+        <rect x="640" y="395" width="120" height="8" rx="4" fill="#A0C8E0" transform="skewX(-15)" />
+        <rect x="640" y="415" width="140" height="8" rx="4" fill="#90B8D8" transform="skewX(-15)" />
+        <rect x="640" y="435" width="160" height="8" rx="4" fill="#80A8C8" transform="skewX(-15)" />
+      </g>
+      
+      <!-- Vertical glass panels -->
+      <line x1="700" y1="380" x2="700" y2="460" stroke="#FFFFFF" stroke-width="2" opacity="0.5" />
+      <line x1="780" y1="360" x2="780" y2="450" stroke="#FFFFFF" stroke-width="2" opacity="0.4" />
+      <line x1="860" y1="345" x2="860" y2="430" stroke="#FFFFFF" stroke-width="2" opacity="0.3" />
+      
+      <!-- Canopy/overhang -->
+      <path d="M550 480 L700 420 L850 380 L680 440 Z" fill="#FFFFFF" opacity="0.7" />
+      
+      <!-- Support columns -->
+      <rect x="520" y="540" width="16" height="60" rx="4" fill="#C0D0DC" />
+      <rect x="680" y="520" width="16" height="80" rx="4" fill="#B8C8D4" />
+    </g>
+    
+    <!-- Trees - vibrant green foliage -->
+    <g filter="url(#tree-glow)">
+      <!-- Left tree cluster -->
+      <g transform={`translate(${treeVariation * 20}, 0)`}>
+        <!-- Tree 1 - large -->
+        <ellipse cx="220" cy="520" rx="55" ry="65" fill="url(#tree-mid)" />
+        <ellipse cx="200" cy="540" rx="45" ry="55" fill="url(#tree-dark)" />
+        <ellipse cx="245" cy="505" rx="35" ry="45" fill="url(#tree-light)" />
+        <rect x="215" y="575" width="14" height="50" rx="5" fill="#5A4A3A" opacity="0.7" />
+        
+        <!-- Tree 2 - medium -->
+        <ellipse cx="140" cy="560" rx="40" ry="50" fill="url(#tree-dark)" />
+        <ellipse cx="155" cy="545" rx="32" ry="40" fill="url(#tree-mid)" />
+        <ellipse cx="130" cy="555" rx="28" ry="35" fill="url(#tree-light)" />
+        <rect x="137" y="600" width="10" height="40" rx="4" fill="#5A4A3A" opacity="0.6" />
+      </g>
+      
+      <!-- Right tree cluster -->
+      <g transform={`translate(${-treeVariation * 15}, 0)`}>
+        <!-- Tree 3 - large -->
+        <ellipse cx="1250" cy="540" rx="60" ry="70" fill="url(#tree-mid)" />
+        <ellipse cx="1230" cy="560" rx="50" ry="60" fill="url(#tree-dark)" />
+        <ellipse cx="1275" cy="520" rx="40" ry="50" fill="url(#tree-light)" />
+        <rect x="1245" y="600" width="14" height="55" rx="5" fill="#5A4A3A" opacity="0.7" />
+        
+        <!-- Tree 4 - small -->
+        <ellipse cx="1340" cy="580" rx="35" ry="45" fill="url(#tree-dark)" />
+        <ellipse cx="1355" cy="565" rx="28" ry="36" fill="url(#tree-mid)" />
+        <rect x="1348" y="615" width="10" height="35" rx="4" fill="#5A4A3A" opacity="0.6" />
+      </g>
+      
+      <!-- Foreground shrubs -->
+      <ellipse cx="380" cy="680" rx="30" ry="25" fill="url(#tree-mid)" opacity="0.8" />
+      <ellipse cx="1080" cy="670" rx="35" ry="28" fill="url(#tree-dark)" opacity="0.7" />
+    </g>
+    
+    <!-- Floating particles (subtle animation via CSS) -->
+    <g class="particles" opacity="0.4">
+      <circle cx="400" cy="200" r="3" fill="#FFFFFF" />
+      <circle cx="800" cy="150" r="2" fill="#FFFFFF" />
+      <circle cx="1200" cy="250" r="2.5" fill="#FFFFFF" />
+      <circle cx="600" cy="300" r="2" fill="#FFFFFF" />
+      <circle cx="1000" cy="180" r="3" fill="#FFFFFF" />
+      <circle cx="300" cy="350" r="2" fill="#FFFFFF" />
+      <circle cx="1100" cy="320" r="2.5" fill="#FFFFFF" />
+    </g>
+    
+    <!-- Ground shadow/fade -->
+    <rect x="0" y="650" width="1600" height="250" fill="url(#ground-shadow)" />
+  </svg>
+
+  <!-- Minimal wash overlay - just enough for text contrast at bottom -->
+  <div class="hero-scene__wash"></div>
+</div>
+
+<style>
+  .hero-scene {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  
+  .hero-scene__svg {
+    width: 100%;
+    height: 100%;
+    transform: scale(1.05);
+  }
+  
+  /* Minimal wash - only at bottom for text contrast */
+  .hero-scene__wash {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0) 50%,
+      rgba(255, 255, 255, 0.15) 70%,
+      rgba(255, 255, 255, 0.4) 85%,
+      rgba(255, 255, 255, 0.6) 100%
+    );
+  }
+  
+  /* Subtle floating animation for particles */
+  .particles circle {
+    animation: float 8s ease-in-out infinite;
+  }
+  
+  .particles circle:nth-child(2n) {
+    animation-delay: -2s;
+    animation-duration: 10s;
+  }
+  
+  .particles circle:nth-child(3n) {
+    animation-delay: -4s;
+    animation-duration: 12s;
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0) translateX(0);
+      opacity: 0.4;
+    }
+    50% {
+      transform: translateY(-20px) translateX(10px);
+      opacity: 0.6;
+    }
+  }
+  
+  /* Respect reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .particles circle {
+      animation: none;
+    }
+  }
+</style>
